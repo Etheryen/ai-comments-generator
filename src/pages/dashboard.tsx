@@ -16,5 +16,5 @@ export default function Dashboard() {
   const { isUnauthed } = useProtectedPage();
   if (isUnauthed) return null;
 
-  return <div className="text-8xl text-white">dawdaw</div>;
+  return <div className="text-5xl text-white">Hi, dashboard here</div>;
 }

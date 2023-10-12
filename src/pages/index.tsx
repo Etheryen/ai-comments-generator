@@ -37,18 +37,18 @@ export default function Home() {
       )}
       {sessionStatus === "unauthenticated" && (
         <button
-          className="flex gap-2 rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
+          className="flex items-center gap-3 rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
           onClick={() => void signIn("github", { callbackUrl: "/dashboard" })}
         >
           <GithubIcon />
-          Sign in with GitHub
+          <span>Sign in with GitHub</span>
         </button>
       )}
       {sessionStatus === "authenticated" && (
         <div className="flex flex-col items-center gap-4">
           <Link
             href={"/dashboard"}
-            className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
+            className="rounded-full bg-white/10 px-10 py-3 text-center font-semibold text-white no-underline transition hover:bg-white/20"
           >
             Go generate some comments!
           </Link>

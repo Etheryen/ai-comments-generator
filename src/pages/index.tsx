@@ -1,5 +1,7 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import { type LayoutProps } from "~/components/layout";
+import { GithubIcon, Loader2Icon } from "lucide-react";
+import Link from "next/link";
 
 export function getStaticProps() {
   return {
@@ -14,6 +16,8 @@ export function getStaticProps() {
 }
 
 export default function Home() {
+  const { status: sessionStatus } = useSession();
+
   return (
     <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
       <h1 className="text-center text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
@@ -26,24 +30,36 @@ export default function Home() {
         </p>
         <p>No need to worry anymore, we got you covered 😎</p>
       </div>
-      <AuthShowcase />
+      {sessionStatus === "loading" && (
+        <button className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20">
+          <Loader2Icon className="animate-spin" />
+        </button>
+      )}
+      {sessionStatus === "unauthenticated" && (
+        <button
+          className="flex gap-2 rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
+          onClick={() => void signIn("github", { callbackUrl: "/dashboard" })}
+        >
+          <GithubIcon />
+          Sign in with GitHub
+        </button>
+      )}
+      {sessionStatus === "authenticated" && (
+        <div className="flex flex-col items-center gap-4">
+          <Link
+            href={"/dashboard"}
+            className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
+          >
+            Go generate some comments!
+          </Link>
+          <button
+            className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
+            onClick={() => void signOut()}
+          >
+            Sign out
+          </button>
+        </div>
+      )}
     </div>
-  );
-}
-
-function AuthShowcase() {
-  const { data: sessionData } = useSession();
-
-  return (
-    <button
-      className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
-      onClick={
-        sessionData
-          ? () => void signOut()
-          : () => void signIn("github", { callbackUrl: "/dashboard" })
-      }
-    >
-      {sessionData ? "Sign out" : "Sign in"}
-    </button>
   );
 }

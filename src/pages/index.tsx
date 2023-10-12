@@ -15,8 +15,6 @@ export function getStaticProps() {
 }
 
 export default function Home() {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
-
   return (
     <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
       <h1 className="text-center text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
@@ -29,12 +27,7 @@ export default function Home() {
         </p>
         <p>No need to worry anymore, we got you covered 😎</p>
       </div>
-      <div className="flex flex-col items-center gap-2">
-        <AuthShowcase />
-        <p className="text-2xl text-white">
-          {hello.data ? hello.data.greeting : "Loading tRPC query..."}
-        </p>
-      </div>
+      <AuthShowcase />
     </div>
   );
 }

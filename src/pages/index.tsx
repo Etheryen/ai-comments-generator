@@ -1,6 +1,5 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import { type LayoutProps } from "~/components/layout";
-import { api } from "~/utils/api";
 
 export function getStaticProps() {
   return {
@@ -38,7 +37,11 @@ function AuthShowcase() {
   return (
     <button
       className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
-      onClick={sessionData ? () => void signOut() : () => void signIn("github")}
+      onClick={
+        sessionData
+          ? () => void signOut()
+          : () => void signIn("github", { callbackUrl: "/dashboard" })
+      }
     >
       {sessionData ? "Sign out" : "Sign in"}
     </button>

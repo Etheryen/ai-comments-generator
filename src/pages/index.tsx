@@ -1,7 +1,12 @@
+import {
+  GithubIcon,
+  LayoutDashboardIcon,
+  Loader2Icon,
+  LogOutIcon,
+} from "lucide-react";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { type LayoutProps } from "~/components/layout";
-import { GithubIcon, Loader2Icon } from "lucide-react";
 import Link from "next/link";
+import { type LayoutProps } from "~/components/layout";
 
 export function getStaticProps() {
   return {
@@ -48,15 +53,17 @@ export default function Home() {
         <div className="flex flex-col items-center gap-4">
           <Link
             href={"/dashboard"}
-            className="rounded-full bg-white/10 px-10 py-3 text-center font-semibold no-underline transition hover:bg-white/20"
+            className="flex items-center gap-3 whitespace-nowrap rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
           >
-            Go to dashboard
+            <LayoutDashboardIcon />
+            <span>Go to dashboard</span>
           </Link>
           <button
-            className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
+            className="flex items-center gap-3 whitespace-nowrap rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
             onClick={() => void signOut()}
           >
-            Sign out
+            <LogOutIcon />
+            <span>Sign out</span>
           </button>
         </div>
       )}

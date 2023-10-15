@@ -1,4 +1,4 @@
-import { Loader2Icon } from "lucide-react";
+import { Loader2Icon, LogOutIcon } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -58,11 +58,12 @@ function User() {
         <div className="truncate">{data.user.name}</div>
       </div>
       <button
-        className="whitespace-nowrap rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
+        className="flex items-center gap-3 whitespace-nowrap rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onClick={handleSignOut}
       >
-        Sign out
+        <LogOutIcon />
+        <span>Sign out</span>
       </button>
     </div>
   );

@@ -1,6 +1,7 @@
 import { Loader2Icon } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { type LayoutProps } from "~/components/layout";
 import { useProtectedPage } from "~/utils/useProtectedPage";
 
@@ -32,9 +33,15 @@ export default function Dashboard() {
 }
 
 function User() {
+  const router = useRouter();
   const { data } = useSession();
 
   if (!data) return null;
+
+  const handleSignOut = async () => {
+    await signOut({ redirect: false });
+    await router.push("/");
+  };
 
   return (
     <div className="flex items-center justify-between gap-4 border-t border-t-neutral-500 pt-4">
@@ -52,7 +59,8 @@ function User() {
       </div>
       <button
         className="whitespace-nowrap rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
-        onClick={() => void signOut()}
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        onClick={handleSignOut}
       >
         Sign out
       </button>

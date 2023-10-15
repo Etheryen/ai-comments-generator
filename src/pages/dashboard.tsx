@@ -1,3 +1,4 @@
+import { Loader2Icon } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { type LayoutProps } from "~/components/layout";
@@ -16,7 +17,7 @@ export function getStaticProps() {
 
 export default function Dashboard() {
   const { isUnauthed } = useProtectedPage();
-  if (isUnauthed) return null;
+  if (isUnauthed) return <Loader2Icon className="animate-spin" />;
 
   return (
     <div className="flex w-full flex-1">

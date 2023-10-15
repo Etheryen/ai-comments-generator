@@ -7,7 +7,7 @@ export function getStaticProps() {
   return {
     props: {
       layout: {
-        title: "Dashboard",
+        title: "Dashboard | Ai Comments Generator",
         description: "Dashboard of the Ai Comments Generator app",
       } as LayoutProps,
     },

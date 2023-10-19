@@ -64,7 +64,7 @@ export default function Home() {
           <Button
             variant={"semiTransparent"}
             roundness={"round"}
-            onClick={() => void signOut()}
+            onClick={() => void signOut({ redirect: false })}
           >
             <LogOutIcon className="mr-2" /> Sign out
           </Button>

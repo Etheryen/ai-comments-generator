@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const newQuerySchema = z.object({
+  id: z.string(),
   query: z
     .string()
     .min(1, "Query must not be empty")

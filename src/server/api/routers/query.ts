@@ -20,14 +20,25 @@ export const queryRouter = createTRPCRouter({
           "https://railway.io/project/2489ysd7f78tn8fsdfsdf/api/query",
           {
             method: "POST",
-            body: JSON.stringify(input),
+            body: JSON.stringify({ queryId: input.id, queryText: input.query }),
             headers: {
               "Content-Type": "application/json",
               PasswordHash: "daw78dhaw78dhaw78da", // TODO: use actual process.env.AI_API_SECRET
             },
           },
         );
-        return queryResponseSchema.parse(await response.json());
+        const parsedQueryResponse = queryResponseSchema.parse(
+          await response.json(),
+        );
+
+        await ctx.db.comment.createMany({
+          data: parsedQueryResponse.comments.map((comment) => ({
+            queryId: input.id,
+            text: comment.text,
+          })),
+        });
+
+        return { status: "ok" } as const;
       } catch (error) {
         console.log({ error });
         throw new TRPCError({

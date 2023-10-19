@@ -3,7 +3,8 @@ import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { type LayoutProps } from "~/components/layout";
-import { useProtectedPage } from "~/utils/useProtectedPage";
+import { Button } from "~/components/ui/button";
+import { useProtectedPage } from "~/utils/use-protected-page";
 
 export function getStaticProps() {
   return {
@@ -57,14 +58,14 @@ function User() {
         )}
         <div className="truncate">{data.user.name}</div>
       </div>
-      <button
-        className="flex items-center gap-3 whitespace-nowrap rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
+      <Button
+        variant={"semiTransparent"}
+        roundness={"round"}
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onClick={handleSignOut}
       >
-        <LogOutIcon />
-        <span>Sign out</span>
-      </button>
+        <LogOutIcon className="mr-2" /> Sign out
+      </Button>
     </div>
   );
 }

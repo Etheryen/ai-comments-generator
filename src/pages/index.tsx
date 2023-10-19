@@ -7,6 +7,7 @@ import {
 import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { type LayoutProps } from "~/components/layout";
+import { Button, buttonVariants } from "~/components/ui/button";
 
 export function getStaticProps() {
   return {
@@ -36,35 +37,37 @@ export default function Home() {
         <p>No need to worry anymore, we got you covered 😎</p>
       </div>
       {sessionStatus === "loading" && (
-        <button className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20">
+        <Button variant={"semiTransparent"} roundness={"round"}>
           <Loader2Icon className="animate-spin" />
-        </button>
+        </Button>
       )}
       {sessionStatus === "unauthenticated" && (
-        <button
-          className="flex items-center gap-3 rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
+        <Button
+          variant={"semiTransparent"}
+          roundness={"round"}
           onClick={() => void signIn("github", { callbackUrl: "/dashboard" })}
         >
-          <GithubIcon />
-          <span>Sign in with GitHub</span>
-        </button>
+          <GithubIcon className="mr-2" /> Sign in with GitHub
+        </Button>
       )}
       {sessionStatus === "authenticated" && (
         <div className="flex flex-col items-center gap-4">
           <Link
             href={"/dashboard"}
-            className="flex items-center gap-3 whitespace-nowrap rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
+            className={buttonVariants({
+              variant: "semiTransparent",
+              roundness: "round",
+            })}
           >
-            <LayoutDashboardIcon />
-            <span>Go to dashboard</span>
+            <LayoutDashboardIcon className="mr-2" /> Go to dashboard
           </Link>
-          <button
-            className="flex items-center gap-3 whitespace-nowrap rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
+          <Button
+            variant={"semiTransparent"}
+            roundness={"round"}
             onClick={() => void signOut()}
           >
-            <LogOutIcon />
-            <span>Sign out</span>
-          </button>
+            <LogOutIcon className="mr-2" /> Sign out
+          </Button>
         </div>
       )}
     </div>

@@ -1,3 +1,26 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+}
+
+@layer components {
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply rounded-full;
+    @apply bg-fuchsia-950/70;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-fuchsia-900;
+    @apply hover:bg-fuchsia-700;
+    @apply rounded-full;
+  }
+}

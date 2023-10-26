@@ -37,14 +37,13 @@ export default function Home() {
         <p>No need to worry anymore, we got you covered 😎</p>
       </div>
       {sessionStatus === "loading" && (
-        <Button variant={"semiTransparent"} roundness={"round"}>
+        <Button variant={"semiTransparentPill"}>
           <Loader2Icon className="animate-spin" />
         </Button>
       )}
       {sessionStatus === "unauthenticated" && (
         <Button
-          variant={"semiTransparent"}
-          roundness={"round"}
+          variant={"semiTransparentPill"}
           onClick={() => void signIn("github", { callbackUrl: "/dashboard" })}
         >
           <GithubIcon className="mr-2" /> Sign in with GitHub
@@ -55,15 +54,13 @@ export default function Home() {
           <Link
             href={"/dashboard"}
             className={buttonVariants({
-              variant: "semiTransparent",
-              roundness: "round",
+              variant: "semiTransparentPill",
             })}
           >
             <LayoutDashboardIcon className="mr-2" /> Go to dashboard
           </Link>
           <Button
-            variant={"semiTransparent"}
-            roundness={"round"}
+            variant={"semiTransparentPill"}
             onClick={() => void signOut({ redirect: false })}
           >
             <LogOutIcon className="mr-2" /> Sign out

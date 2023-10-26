@@ -10,6 +10,7 @@
 
 @layer components {
   ::-webkit-scrollbar {
+    @apply h-3;
     @apply w-2;
   }
 

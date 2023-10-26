@@ -27,7 +27,7 @@ export default function Home() {
   return (
     <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
       <h1 className="text-center text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-        <span className="text-fuchsia-600">Ai</span> Comments Generator
+        <span className="text-fuchsia-500">Ai</span> Comments Generator
       </h1>
       <div className="flex flex-col gap-4 text-center text-3xl">
         <p>

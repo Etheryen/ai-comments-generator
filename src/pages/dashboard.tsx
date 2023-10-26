@@ -42,7 +42,7 @@ export default function Dashboard() {
           })}
         >
           <span className="truncate">
-            <span className="text-fuchsia-600">Ai</span> Comments Generator
+            <span className="text-fuchsia-500">Ai</span> Comments Generator
           </span>
         </Link>
         <div className="my-4 border-b border-b-neutral-500" />
@@ -83,7 +83,7 @@ function QueryList() {
           // className="text-semibold flex w-full items-center justify-center gap-2 rounded-lg bg-neutral-800 px-5 py-3 font-semibold text-white"
           onClick={() => setSelectedQueryId(null)}
         >
-          <PlusIcon /> Add new
+          <PlusIcon className="mr-2 text-fuchsia-500" /> Add new
         </Button>
       </div>
     </>

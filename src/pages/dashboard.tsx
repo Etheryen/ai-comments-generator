@@ -141,8 +141,15 @@ function QueryList() {
 function QueryElement({ id, input }: Pick<Query, "id" | "input">) {
   const setSelectedQueryId = useSetAtom(selectedQueryIdAtom);
 
+  const utils = api.useContext();
+
+  const onHover = () => {
+    if (utils.comments.getAllByQueryId.getData({ id })) return;
+    void utils.comments.getAllByQueryId.prefetch({ id });
+  };
+
   return (
-    <div className="w-full px-2">
+    <div onMouseOver={onHover} className="w-full px-2">
       <Button
         className="block w-full truncate"
         // className="text-semibold w-full rounded-lg bg-neutral-800 px-5 py-3 text-white"

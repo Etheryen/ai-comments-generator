@@ -8,6 +8,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { type LayoutProps } from "~/components/layout";
 import { Button, buttonVariants } from "~/components/ui/button";
+import { api } from "~/utils/api";
 
 export function getStaticProps() {
   return {
@@ -23,6 +24,12 @@ export function getStaticProps() {
 
 export default function Home() {
   const { status: sessionStatus } = useSession();
+  const utils = api.useContext();
+
+  const onDashboardHover = () => {
+    if (utils.queries.getAllQueryNames.getData()) return;
+    void utils.queries.getAllQueryNames.prefetch();
+  };
 
   return (
     <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
@@ -53,6 +60,7 @@ export default function Home() {
         <div className="flex flex-col items-center gap-4">
           <Link
             href={"/dashboard"}
+            onMouseOver={onDashboardHover}
             className={buttonVariants({
               variant: "semiTransparentPill",
             })}

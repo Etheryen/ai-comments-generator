@@ -18,8 +18,8 @@ export function getStaticProps() {
   return {
     props: {
       layout: {
-        title: "Dashboard | Ai Comments Generator",
-        description: "Dashboard of the Ai Comments Generator app",
+        title: "Dashboard | AI Comments Generator",
+        description: "Dashboard of the AI Comments Generator app",
       } as LayoutProps,
     },
   };
@@ -44,7 +44,7 @@ export default function Dashboard() {
           })}
         >
           <span className="truncate">
-            <span className="text-fuchsia-500">Ai</span> Comments Generator
+            <span className="text-fuchsia-500">AI</span> Comments Generator
           </span>
         </Link>
         <div className="my-4 border-b border-b-neutral-500" />

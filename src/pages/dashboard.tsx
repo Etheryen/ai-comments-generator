@@ -49,7 +49,7 @@ export default function Dashboard() {
         </Link>
         <div className="my-4 border-b border-b-neutral-500" />
         <div className="flex flex-1 flex-col items-center gap-2 overflow-y-auto">
-          <QueryList />
+          <SidePanel />
         </div>
         <div className="my-4 border-b border-b-neutral-500" />
         <User />
@@ -63,17 +63,18 @@ export default function Dashboard() {
 
 function MainPanel() {
   const selectedQueryId = useAtomValue(selectedQueryIdAtom);
-  const [lastErrorMessage, setLastErrorMessage] = useState("");
 
   const { data, isLoading, error, refetch, isRefetching } =
     api.comments.getAllByQueryId.useQuery(
       { id: selectedQueryId! },
-      { enabled: !!selectedQueryId, retry: false },
+      { enabled: !!selectedQueryId },
     );
+
+  const [lastErrorMessage, setLastErrorMessage] = useState("");
 
   if (selectedQueryId) {
     // Display the name, and then this error in another component where comments would be
-    if (error ?? lastErrorMessage) {
+    if (!data && (error ?? lastErrorMessage)) {
       if (error?.message && error.message !== lastErrorMessage)
         setLastErrorMessage(error.message);
       return (
@@ -97,28 +98,8 @@ function MainPanel() {
   );
 }
 
-function QueryList() {
+function SidePanel() {
   const setSelectedQueryId = useSetAtom(selectedQueryIdAtom);
-
-  const { data, isLoading, error } = api.queries.getAllQueryNames.useQuery();
-
-  if (isLoading)
-    return (
-      <>
-        <div className="w-full px-2">
-          <Button
-            className="w-full"
-            // className="text-semibold flex w-full items-center justify-center gap-2 rounded-lg bg-neutral-800 px-5 py-3 font-semibold text-white"
-            onClick={() => setSelectedQueryId(null)}
-          >
-            <PlusIcon className="mr-2 text-fuchsia-500" /> Add new
-          </Button>
-        </div>
-        <Loader2Icon className="mt-4 animate-spin" />
-      </>
-    );
-
-  if (error) return <div>Error occured: {error.message}</div>;
 
   return (
     <>
@@ -131,6 +112,34 @@ function QueryList() {
           <PlusIcon className="mr-2 text-fuchsia-500" /> Add new
         </Button>
       </div>
+      <QueryList />
+    </>
+  );
+}
+
+function QueryList() {
+  const { data, isLoading, error, isRefetching, refetch } =
+    api.queries.getAllQueryNames.useQuery();
+
+  const [lastErrorMessage, setLastErrorMessage] = useState("");
+
+  if (!data && (error ?? lastErrorMessage)) {
+    if (error?.message && error.message !== lastErrorMessage)
+      setLastErrorMessage(error.message);
+    return (
+      <ErrorAlert
+        isSidePanel
+        message={error?.message ?? lastErrorMessage}
+        isRefetching={isRefetching || isLoading}
+        refetch={refetch as unknown as () => Promise<void>}
+      />
+    );
+  }
+
+  if (isLoading) return <Loader2Icon className="mt-4 animate-spin" />;
+
+  return (
+    <>
       {data.map((query) => (
         <QueryElement key={query.id} {...query} />
       ))}
@@ -140,7 +149,6 @@ function QueryList() {
 
 function QueryElement({ id, input }: Pick<Query, "id" | "input">) {
   const setSelectedQueryId = useSetAtom(selectedQueryIdAtom);
-
   const utils = api.useContext();
 
   const onHover = () => {

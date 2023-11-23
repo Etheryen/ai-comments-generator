@@ -11,6 +11,14 @@ import { atom, useAtomValue, useSetAtom } from "jotai";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ErrorAlert } from "~/components/error-alert";
+import { type SubmitHandler, useForm } from "react-hook-form";
+import { z } from "zod";
+import { newQuerySchema } from "~/utils/schemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { cn } from "~/utils/classnames";
+import ReactTextareaAutosize from "react-textarea-autosize";
+import { type inferProcedureOutput } from "@trpc/server";
+import { type AppRouter } from "~/server/api/root";
 
 const selectedQueryIdAtom = atom<string | null>(null);
 
@@ -54,7 +62,7 @@ export default function Dashboard() {
         <div className="my-4 border-b border-b-neutral-500" />
         <User />
       </div>
-      <div className="flex w-full items-center justify-center p-12">
+      <div className="flex max-h-screen w-full items-center justify-center overflow-y-auto p-12">
         <MainPanel />
       </div>
     </div>
@@ -88,12 +96,254 @@ function MainPanel() {
 
     if (isLoading) return <Loader2Icon className="animate-spin" />;
 
-    return <div>{data?.map(({ id, text }) => <div key={id}>{text}</div>)}</div>;
+    return <QueryWithResults queryId={selectedQueryId} data={data} />;
   }
 
+  return <QueryForm />;
+}
+
+interface QueryWithResultsProps {
+  queryId: string;
+  data: inferProcedureOutput<AppRouter["comments"]["getAllByQueryId"]>;
+}
+
+function QueryWithResults({ queryId, data }: QueryWithResultsProps) {
   return (
-    <div>
-      <div>Add new query!!</div>
+    <div className="w-[60%] space-y-4">
+      <h1 className="mb-8 text-center text-4xl font-bold">
+        Enjoy your <span className="text-primary">comments</span>
+      </h1>
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <label
+              htmlFor="formality"
+              className="label label-text cursor-pointer"
+            >
+              Formal
+            </label>
+            <input
+              type="checkbox"
+              id="formality"
+              disabled
+              className="toggle"
+              checked={data.queryData.register === "formal"}
+            />
+          </div>
+          <div className="flex items-center gap-4">
+            <label
+              htmlFor="positive"
+              className="label label-text cursor-pointer"
+            >
+              Positive
+            </label>
+            <input
+              type="radio"
+              className="radio"
+              value="positive"
+              id="positive"
+              disabled
+              checked={data.queryData.type === "positive"}
+            />
+            <label
+              htmlFor="neutral"
+              className="label label-text cursor-pointer"
+            >
+              Neutral
+            </label>
+            <input
+              type="radio"
+              className="radio"
+              value="neutral"
+              id="neutral"
+              disabled
+              checked={data.queryData.type === "neutral"}
+            />
+            <label
+              htmlFor="negative"
+              className="label label-text cursor-pointer"
+            >
+              Negative
+            </label>
+            <input
+              type="radio"
+              className="radio"
+              value="negative"
+              id="negative"
+              disabled
+              checked={data.queryData.type === "negative"}
+            />
+          </div>
+        </div>
+        <div className="mt-2 flex flex-col">
+          <ReactTextareaAutosize
+            maxRows={8}
+            maxLength={300}
+            autoFocus
+            placeholder="Type your post content here..."
+            id="firstName"
+            value={data.queryData.input}
+            disabled
+            className={cn(
+              "textarea textarea-bordered h-32 resize-none text-lg text-white",
+            )}
+          />
+        </div>
+      </div>
+      <div className="mt-4 flex flex-col gap-4">
+        {data.comments.map((comment) => (
+          <div key={comment.id} className="card bg-neutral-900/60 text-lg">
+            <div className="card-body">
+              <p>{comment.text}</p>
+            </div>
+          </div>
+        ))}
+        {/* TODO: actually make it fetch more */}
+        <Button className="mx-auto w-fit bg-primary px-6 hover:bg-primary/80">
+          <PlusIcon className="mr-2" />I need more!
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+const formSchema = newQuerySchema.omit({ register: true }).extend({
+  isFormal: z.boolean(),
+});
+
+type FormSchema = z.infer<typeof formSchema>;
+
+function QueryForm() {
+  const [customIsLoading, setCustomIsLoading] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormSchema>({
+    resolver: zodResolver(formSchema),
+  });
+
+  const onSubmit: SubmitHandler<FormSchema> = async (data) => {
+    setCustomIsLoading(true);
+    const finalData = {
+      ...data,
+      register: data.isFormal ? "formal" : "informal",
+    };
+    // TODO: handle error
+    await new Promise((r) => setTimeout(r, 2000));
+    setCustomIsLoading(false);
+    console.log(data);
+  };
+
+  return (
+    <div className="w-[60%] space-y-4">
+      <h1 className="mb-8 text-center text-4xl font-bold">
+        Generate some <span className="text-primary">comments</span>
+      </h1>
+      <form
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col gap-2"
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <label
+              htmlFor="formality"
+              className="label label-text cursor-pointer"
+            >
+              Formal
+            </label>
+            <input
+              type="checkbox"
+              defaultChecked
+              {...register("isFormal")}
+              id="formality"
+              disabled={customIsLoading}
+              className="toggle"
+            />
+          </div>
+          <div className="flex items-center gap-4">
+            <label
+              htmlFor="positive"
+              className="label label-text cursor-pointer"
+            >
+              Positive
+            </label>
+            <input
+              type="radio"
+              className="radio"
+              value="positive"
+              {...register("type")}
+              id="positive"
+              disabled={customIsLoading}
+              defaultChecked
+            />
+            <label
+              htmlFor="neutral"
+              className="label label-text cursor-pointer"
+            >
+              Neutral
+            </label>
+            <input
+              type="radio"
+              className="radio"
+              value="neutral"
+              {...register("type")}
+              id="neutral"
+              disabled={customIsLoading}
+            />
+            <label
+              htmlFor="negative"
+              className="label label-text cursor-pointer"
+            >
+              Negative
+            </label>
+            <input
+              type="radio"
+              className="radio"
+              value="negative"
+              {...register("type")}
+              id="negative"
+              disabled={customIsLoading}
+            />
+          </div>
+        </div>
+        <div className="label label-text-alt flex justify-end">
+          <span>Max 300 characters</span>
+        </div>
+        <div className="flex flex-col">
+          <ReactTextareaAutosize
+            maxRows={8}
+            maxLength={300}
+            autoFocus
+            placeholder="Type your post content here..."
+            id="firstName"
+            {...register("query")}
+            disabled={customIsLoading}
+            className={cn(
+              "textarea textarea-bordered h-32 resize-none text-lg text-white",
+              {
+                "textarea-error text-error": errors.query,
+              },
+            )}
+          />
+          {errors.query && (
+            <div className="label label-text-alt mt-1 text-error">
+              {errors.query.message}
+            </div>
+          )}
+        </div>
+        <Button
+          disabled={customIsLoading}
+          className="mt-2 bg-primary hover:bg-primary/80"
+        >
+          {customIsLoading && (
+            <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+          )}
+          Submit{customIsLoading && "ting"}
+        </Button>
+      </form>
     </div>
   );
 }

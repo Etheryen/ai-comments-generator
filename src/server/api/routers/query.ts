@@ -20,7 +20,7 @@ export const queryRouter = createTRPCRouter({
           "https://railway.io/project/2489ysd7f78tn8fsdfsdf/api/query",
           {
             method: "POST",
-            body: JSON.stringify({ queryId: input.id, queryText: input.query }),
+            body: JSON.stringify({ ...input }),
             headers: {
               "Content-Type": "application/json",
               PasswordHash: "daw78dhaw78dhaw78da", // TODO: use actual process.env.AI_API_SECRET
@@ -31,9 +31,18 @@ export const queryRouter = createTRPCRouter({
           await response.json(),
         );
 
+        const { id } = await ctx.db.query.create({
+          data: {
+            input: input.query,
+            type: input.type,
+            register: input.register,
+            userId: ctx.session.user.id,
+          },
+        });
+
         await ctx.db.comment.createMany({
           data: parsedQueryResponse.comments.map((comment) => ({
-            queryId: input.id,
+            queryId: id,
             text: comment.text,
           })),
         });

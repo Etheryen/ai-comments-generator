@@ -5,5 +5,16 @@ export default {
   theme: {
     extend: {},
   },
-  plugins: [],
+  daisyui: {
+    themes: [
+      {
+        mytheme: {
+          primary: "#d946ef",
+          "base-100": "#262626",
+        },
+      },
+      // "dark",
+    ],
+  },
+  plugins: [require("daisyui")],
 } satisfies Config;

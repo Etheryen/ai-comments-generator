@@ -14,11 +14,25 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+enum Register {
+    formal
+    informal
+}
+
+enum QueryType {
+    positive
+    neutral
+    negative
+}
+
 model Query {
     id        String   @id @default(cuid())
     input     String
     userId    String
-    createdAt DateTime
+    createdAt DateTime @default(now())
+
+    register Register
+    type     QueryType
 
     Comment Comment[]
 

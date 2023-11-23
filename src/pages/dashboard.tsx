@@ -109,7 +109,7 @@ interface QueryWithResultsProps {
 
 function QueryWithResults({ queryId, data }: QueryWithResultsProps) {
   return (
-    <div className="w-[60%] space-y-4">
+    <div className="w-[80%] max-w-2xl space-y-4">
       <h1 className="mb-8 text-center text-4xl font-bold">
         Enjoy your <span className="text-primary">comments</span>
       </h1>
@@ -227,7 +227,8 @@ function QueryForm() {
   const onSubmit: SubmitHandler<FormSchema> = async (data) => {
     setCustomIsLoading(true);
     const finalData = {
-      ...data,
+      query: data.query,
+      type: data.type,
       register: data.isFormal ? "formal" : "informal",
     };
     // TODO: handle error
@@ -237,7 +238,7 @@ function QueryForm() {
   };
 
   return (
-    <div className="w-[60%] space-y-4">
+    <div className="w-[80%] max-w-2xl space-y-4">
       <h1 className="mb-8 text-center text-4xl font-bold">
         Generate some <span className="text-primary">comments</span>
       </h1>

@@ -2,6 +2,7 @@ import Head from "next/head";
 import { type PropsWithChildren } from "react";
 import { Inter } from "next/font/google";
 import { cn } from "~/utils/classnames";
+import { Toaster } from "react-hot-toast";
 
 export interface LayoutProps extends PropsWithChildren {
   title: string;
@@ -26,6 +27,7 @@ export function Layout({ title, description, children }: LayoutProps) {
       >
         {children}
       </main>
+      <Toaster position="bottom-right" />
     </>
   );
 }

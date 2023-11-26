@@ -19,6 +19,7 @@ import { cn } from "~/utils/classnames";
 import ReactTextareaAutosize from "react-textarea-autosize";
 import { type inferProcedureOutput } from "@trpc/server";
 import { type AppRouter } from "~/server/api/root";
+import toast from "react-hot-toast";
 
 const selectedQueryIdAtom = atom<string | null>(null);
 const isNavOpenAtom = atom(false);
@@ -59,7 +60,7 @@ export default function Dashboard() {
       <SideSection />
       <div
         className={cn(
-          "flex max-h-screen w-full items-center justify-center overflow-y-auto p-12 sm:blur-none sm:brightness-100",
+          "flex w-full items-center justify-center p-12 sm:blur-none sm:brightness-100",
           { "blur-sm": isNavOpen },
         )}
         onClick={isNavOpen ? () => setIsNavOpen(false) : () => undefined}
@@ -76,7 +77,7 @@ function SideSection() {
   return (
     <div
       className={cn(
-        "absolute z-50 flex h-screen w-[80vw] flex-col bg-neutral-900 p-2 transition-transform supports-[height:100dvh]:h-[100dvh] sm:static sm:w-56 sm:-translate-x-0 md:w-64 lg:w-72 xl:w-96",
+        "absolute z-50 flex h-screen w-[80vw] flex-col bg-neutral-900 p-2 transition-transform supports-[height:100dvh]:h-[100dvh] sm:sticky sm:left-0 sm:top-0 sm:w-56 sm:-translate-x-0 md:w-64 lg:w-72 xl:w-96",
         {
           "-translate-x-[100%]": !isNavOpen,
         },
@@ -152,7 +153,7 @@ interface QueryWithResultsProps {
 
 function QueryWithResults({ queryId, data }: QueryWithResultsProps) {
   return (
-    <div className="w-full max-w-2xl space-y-4 md:w-[80%]">
+    <div className="w-full max-w-2xl space-y-4 pt-12 sm:pt-0 md:w-[80%]">
       <h1 className="mb-8 text-center text-4xl font-bold">
         Enjoy your <span className="text-primary">comments</span>
       </h1>
@@ -234,7 +235,10 @@ function QueryWithResults({ queryId, data }: QueryWithResultsProps) {
         {data.comments.map((comment) => (
           <div key={comment.id} className="card bg-neutral-900/60 text-lg">
             <div className="card-body">
-              <p>{comment.text}</p>
+              <h2 className="card-title w-fit bg-gradient-to-r from-fuchsia-400 to-fuchsia-700 bg-clip-text text-transparent">
+                {comment.username}
+              </h2>
+              <p>{comment.message}</p>
             </div>
           </div>
         ))}
@@ -269,18 +273,43 @@ function QueryForm() {
     resolver: zodResolver(formSchema),
   });
 
-  const onSubmit: SubmitHandler<FormSchema> = async (data) => {
+  const utils = api.useContext();
+  const setSelectedQueryId = useSetAtom(selectedQueryIdAtom);
+
+  const { mutate: addNewQuery } = api.queries.addNew.useMutation({
+    onSuccess: async ({ commentsResponse, queryNamesResponse }) => {
+      setSelectedQueryId(queryNamesResponse.id);
+      const currentQueries = utils.queries.getAllQueryNames.getData() ?? [];
+      utils.queries.getAllQueryNames.setData(undefined, [
+        queryNamesResponse,
+        ...currentQueries,
+      ]);
+      utils.comments.getAllByQueryId.setData(
+        { id: queryNamesResponse.id },
+        commentsResponse,
+      );
+      await utils.queries.getAllQueryNames.invalidate();
+    },
+    onError: () => {
+      toast.error("Server error, please try again", {
+        style: {
+          backgroundColor: "#171717",
+          color: "white",
+          padding: "1rem 2rem",
+        },
+      });
+      setCustomIsLoading(false);
+    },
+  });
+
+  const onSubmit: SubmitHandler<FormSchema> = (data) => {
     setCustomIsLoading(true);
     const finalData = {
       query: data.query,
       type: data.type,
-      register: data.isFormal ? "formal" : "informal",
+      register: data.isFormal ? ("formal" as const) : ("informal" as const),
     };
-    // TODO: handle error
-    // TODO: actually send data to mutation
-    await new Promise((r) => setTimeout(r, 2000));
-    setCustomIsLoading(false);
-    console.log(data);
+    addNewQuery(finalData);
   };
 
   const { ref, ...rest } = register("query");

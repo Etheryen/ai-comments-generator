@@ -10,7 +10,8 @@ export const commentRouter = createTRPCRouter({
         ctx.db.comment.findMany({
           select: {
             id: true,
-            text: true,
+            username: true,
+            message: true,
           },
           where: {
             queryId: input.id,

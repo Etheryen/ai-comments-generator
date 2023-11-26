@@ -40,9 +40,10 @@ model Query {
 }
 
 model Comment {
-    id      String @id @default(cuid())
-    queryId String
-    text    String
+    id       String @id @default(cuid())
+    queryId  String
+    username String
+    message  String
 
     query Query @relation(fields: [queryId], references: [id])
 }

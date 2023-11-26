@@ -9,7 +9,7 @@ import { api } from "~/utils/api";
 import { useProtectedPage } from "~/utils/use-protected-page";
 import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ErrorAlert } from "~/components/error-alert";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -21,7 +21,7 @@ import { type inferProcedureOutput } from "@trpc/server";
 import { type AppRouter } from "~/server/api/root";
 
 const selectedQueryIdAtom = atom<string | null>(null);
-const isNavOpenAtom = atom(true);
+const isNavOpenAtom = atom(false);
 
 export function getStaticProps() {
   return {
@@ -228,7 +228,6 @@ function QueryWithResults({ queryId, data }: QueryWithResultsProps) {
           <ReactTextareaAutosize
             maxRows={8}
             maxLength={300}
-            autoFocus
             placeholder="Type your post content here..."
             id="firstName"
             value={data.queryData.input}
@@ -264,6 +263,11 @@ type FormSchema = z.infer<typeof formSchema>;
 
 function QueryForm() {
   const [customIsLoading, setCustomIsLoading] = useState(false);
+  const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  useEffect(() => {
+    if (window.innerWidth > 640) textAreaRef.current?.focus();
+  }, []);
 
   const {
     register,
@@ -286,6 +290,8 @@ function QueryForm() {
     setCustomIsLoading(false);
     console.log(data);
   };
+
+  const { ref, ...rest } = register("query");
 
   return (
     <div className="w-[80%] max-w-2xl space-y-4">
@@ -373,10 +379,13 @@ function QueryForm() {
           <ReactTextareaAutosize
             maxRows={8}
             maxLength={300}
-            autoFocus
+            ref={(e) => {
+              ref(e);
+              textAreaRef.current = e;
+            }}
             placeholder="Type your post content here..."
             id="firstName"
-            {...register("query")}
+            {...rest}
             disabled={customIsLoading}
             className={cn(
               "textarea textarea-bordered h-32 resize-none text-lg text-white",

@@ -152,7 +152,7 @@ interface QueryWithResultsProps {
 
 function QueryWithResults({ queryId, data }: QueryWithResultsProps) {
   return (
-    <div className="w-[80%] max-w-2xl space-y-4">
+    <div className="w-full max-w-2xl space-y-4 md:w-[80%]">
       <h1 className="mb-8 text-center text-4xl font-bold">
         Enjoy your <span className="text-primary">comments</span>
       </h1>
@@ -173,7 +173,7 @@ function QueryWithResults({ queryId, data }: QueryWithResultsProps) {
               checked={data.queryData.register === "formal"}
             />
           </div>
-          <div className="flex flex-col items-center gap-4 sm:flex-row">
+          <div className="flex items-center gap-4">
             <div className="flex items-center gap-4">
               <label
                 htmlFor="positive"
@@ -294,7 +294,7 @@ function QueryForm() {
   const { ref, ...rest } = register("query");
 
   return (
-    <div className="w-[80%] max-w-2xl space-y-4">
+    <div className="w-full max-w-2xl space-y-4 md:w-[80%]">
       <h1 className="mb-8 text-center text-4xl font-bold">
         Generate some <span className="text-primary">comments</span>
       </h1>
@@ -320,7 +320,7 @@ function QueryForm() {
               className="toggle"
             />
           </div>
-          <div className="flex flex-col items-center gap-4 sm:flex-row">
+          <div className="flex items-center gap-4">
             <div className="flex items-center gap-4">
               <label
                 htmlFor="positive"

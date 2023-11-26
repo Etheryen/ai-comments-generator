@@ -76,7 +76,7 @@ function SideSection() {
   return (
     <div
       className={cn(
-        "absolute z-50 flex h-screen w-[80vw] flex-col bg-neutral-900 p-2 supports-[height:100dvh]:h-[100dvh] sm:static sm:w-56 sm:-translate-x-0 md:w-64 lg:w-72 xl:w-96",
+        "absolute z-50 flex h-screen w-[80vw] flex-col bg-neutral-900 p-2 transition-transform supports-[height:100dvh]:h-[100dvh] sm:static sm:w-56 sm:-translate-x-0 md:w-64 lg:w-72 xl:w-96",
         {
           "-translate-x-[100%]": !isNavOpen,
         },

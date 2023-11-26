@@ -14,7 +14,7 @@ export function getStaticProps() {
   return {
     props: {
       layout: {
-        title: "AI Comments Generator",
+        title: "CommentGPT",
         description:
           "Generate example comments fit for a social media post that you provide",
       } as LayoutProps,
@@ -34,7 +34,7 @@ export default function Home() {
   return (
     <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
       <h1 className="text-center text-5xl font-bold tracking-tight sm:text-[5rem]">
-        <span className="text-fuchsia-500">AI</span> Comments Generator
+        Comment<span className="text-fuchsia-500">GPT</span>
       </h1>
       <div className="flex flex-col gap-4 text-center text-3xl">
         <p>

@@ -1,5 +1,5 @@
 import { type Query } from "@prisma/client";
-import { Loader2Icon, LogOutIcon, PlusIcon } from "lucide-react";
+import { Loader2Icon, LogOutIcon, MenuIcon, PlusIcon } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -7,7 +7,7 @@ import { type LayoutProps } from "~/components/layout";
 import { Button, buttonVariants } from "~/components/ui/button";
 import { api } from "~/utils/api";
 import { useProtectedPage } from "~/utils/use-protected-page";
-import { atom, useAtomValue, useSetAtom } from "jotai";
+import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ErrorAlert } from "~/components/error-alert";
@@ -21,20 +21,24 @@ import { type inferProcedureOutput } from "@trpc/server";
 import { type AppRouter } from "~/server/api/root";
 
 const selectedQueryIdAtom = atom<string | null>(null);
+const isNavOpenAtom = atom(true);
 
 export function getStaticProps() {
   return {
     props: {
       layout: {
-        title: "Dashboard | AI Comments Generator",
-        description: "Dashboard of the AI Comments Generator app",
+        title: "Dashboard | CommentGPT",
+        description: "Dashboard of the CommentGPT app",
       } as LayoutProps,
     },
   };
 }
 
 export default function Dashboard() {
+  useResetIsNavOpenAtom();
   useResetSelectedQueryIdAtom();
+
+  const [isNavOpen, setIsNavOpen] = useAtom(isNavOpenAtom);
 
   const { isUnauthed } = useProtectedPage();
   if (isUnauthed) return <Loader2Icon className="animate-spin" />;
@@ -43,28 +47,67 @@ export default function Dashboard() {
     <div className="flex w-full flex-1">
       {/* TODO: zrobic zeby na mobile otwieralo sie przyciskiem a nie w-[25vw] */}
       {/* TODO: h-screen na mobile nie */}
-      <div className="flex h-screen w-[25vw] flex-col bg-neutral-900 p-2 supports-[height:100dvh]:h-[100dvh] sm:w-56 md:w-64 lg:w-72 xl:w-96">
+      {!isNavOpen && (
+        <Button
+          onClick={() => setIsNavOpen(true)}
+          variant={"ghost"}
+          className="absolute left-4 top-4 p-4 sm:hidden"
+        >
+          <MenuIcon />
+        </Button>
+      )}
+      <SideSection />
+      <div
+        className={cn(
+          "flex max-h-screen w-full items-center justify-center overflow-y-auto p-12 sm:blur-none sm:brightness-100",
+          { "blur-sm": isNavOpen },
+        )}
+        onClick={isNavOpen ? () => setIsNavOpen(false) : () => undefined}
+      >
+        <MainPanel />
+      </div>
+    </div>
+  );
+}
+
+function SideSection() {
+  const [isNavOpen, setIsNavOpen] = useAtom(isNavOpenAtom);
+
+  return (
+    <div
+      className={cn(
+        "absolute z-50 flex h-screen w-[80vw] flex-col bg-neutral-900 p-2 supports-[height:100dvh]:h-[100dvh] sm:static sm:w-56 sm:-translate-x-0 md:w-64 lg:w-72 xl:w-96",
+        {
+          "-translate-x-[100%]": !isNavOpen,
+        },
+      )}
+    >
+      <div className="mx-2 mt-2 flex justify-between gap-2">
+        <Button
+          onClick={() => setIsNavOpen(false)}
+          variant={"ghost"}
+          className="left-4 top-4 p-4 sm:hidden"
+        >
+          <MenuIcon />
+        </Button>
         <Link
           href={"/"}
           className={buttonVariants({
             variant: "ghost",
-            className: "w-ful mx-2 mt-2 text-2xl font-extrabold tracking-tight",
+            className: "flex-1 text-2xl font-extrabold tracking-tight",
           })}
         >
-          <span className="truncate">
-            <span className="text-fuchsia-500">AI</span> Comments Generator
+          <span className="text-center">
+            Comment<span className="text-fuchsia-500">GPT</span>
           </span>
         </Link>
-        <div className="my-4 border-b border-b-neutral-500" />
-        <div className="flex flex-1 flex-col items-center gap-2 overflow-y-auto">
-          <SidePanel />
-        </div>
-        <div className="my-4 border-b border-b-neutral-500" />
-        <User />
       </div>
-      <div className="flex max-h-screen w-full items-center justify-center overflow-y-auto p-12">
-        <MainPanel />
+      <div className="my-4 border-b border-b-neutral-500" />
+      <div className="flex flex-1 flex-col items-center gap-2 overflow-y-auto">
+        <SidePanel />
       </div>
+      <div className="my-4 border-b border-b-neutral-500" />
+      <User />
     </div>
   );
 }
@@ -114,7 +157,7 @@ function QueryWithResults({ queryId, data }: QueryWithResultsProps) {
         Enjoy your <span className="text-primary">comments</span>
       </h1>
       <div className="flex flex-col gap-2">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col items-center justify-between gap-4 lg:flex-row">
           <div className="flex items-center gap-4">
             <label
               htmlFor="formality"
@@ -130,49 +173,55 @@ function QueryWithResults({ queryId, data }: QueryWithResultsProps) {
               checked={data.queryData.register === "formal"}
             />
           </div>
-          <div className="flex items-center gap-4">
-            <label
-              htmlFor="positive"
-              className="label label-text cursor-pointer"
-            >
-              Positive
-            </label>
-            <input
-              type="radio"
-              className="radio"
-              value="positive"
-              id="positive"
-              disabled
-              checked={data.queryData.type === "positive"}
-            />
-            <label
-              htmlFor="neutral"
-              className="label label-text cursor-pointer"
-            >
-              Neutral
-            </label>
-            <input
-              type="radio"
-              className="radio"
-              value="neutral"
-              id="neutral"
-              disabled
-              checked={data.queryData.type === "neutral"}
-            />
-            <label
-              htmlFor="negative"
-              className="label label-text cursor-pointer"
-            >
-              Negative
-            </label>
-            <input
-              type="radio"
-              className="radio"
-              value="negative"
-              id="negative"
-              disabled
-              checked={data.queryData.type === "negative"}
-            />
+          <div className="flex flex-col items-center gap-4 sm:flex-row">
+            <div className="flex items-center gap-4">
+              <label
+                htmlFor="positive"
+                className="label label-text cursor-pointer"
+              >
+                Positive
+              </label>
+              <input
+                type="radio"
+                className="radio"
+                value="positive"
+                id="positive"
+                disabled
+                checked={data.queryData.type === "positive"}
+              />
+            </div>
+            <div className="flex items-center gap-4">
+              <label
+                htmlFor="neutral"
+                className="label label-text cursor-pointer"
+              >
+                Neutral
+              </label>
+              <input
+                type="radio"
+                className="radio"
+                value="neutral"
+                id="neutral"
+                disabled
+                checked={data.queryData.type === "neutral"}
+              />
+            </div>
+            <div className="flex items-center gap-4">
+              <label
+                htmlFor="negative"
+                className="label label-text cursor-pointer"
+              >
+                Negative
+              </label>
+              <input
+                type="radio"
+                className="radio"
+                value="negative"
+                id="negative"
+                disabled
+                checked={data.queryData.type === "negative"}
+              />
+            </div>
           </div>
         </div>
         <div className="mt-2 flex flex-col">
@@ -232,6 +281,7 @@ function QueryForm() {
       register: data.isFormal ? "formal" : "informal",
     };
     // TODO: handle error
+    // TODO: actually send data to mutation
     await new Promise((r) => setTimeout(r, 2000));
     setCustomIsLoading(false);
     console.log(data);
@@ -247,7 +297,7 @@ function QueryForm() {
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col gap-2"
       >
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col items-center justify-between gap-4 lg:flex-row">
           <div className="flex items-center gap-4">
             <label
               htmlFor="formality"
@@ -264,50 +314,56 @@ function QueryForm() {
               className="toggle"
             />
           </div>
-          <div className="flex items-center gap-4">
-            <label
-              htmlFor="positive"
-              className="label label-text cursor-pointer"
-            >
-              Positive
-            </label>
-            <input
-              type="radio"
-              className="radio"
-              value="positive"
-              {...register("type")}
-              id="positive"
-              disabled={customIsLoading}
-              defaultChecked
-            />
-            <label
-              htmlFor="neutral"
-              className="label label-text cursor-pointer"
-            >
-              Neutral
-            </label>
-            <input
-              type="radio"
-              className="radio"
-              value="neutral"
-              {...register("type")}
-              id="neutral"
-              disabled={customIsLoading}
-            />
-            <label
-              htmlFor="negative"
-              className="label label-text cursor-pointer"
-            >
-              Negative
-            </label>
-            <input
-              type="radio"
-              className="radio"
-              value="negative"
-              {...register("type")}
-              id="negative"
-              disabled={customIsLoading}
-            />
+          <div className="flex flex-col items-center gap-4 sm:flex-row">
+            <div className="flex items-center gap-4">
+              <label
+                htmlFor="positive"
+                className="label label-text cursor-pointer"
+              >
+                Positive
+              </label>
+              <input
+                type="radio"
+                className="radio"
+                value="positive"
+                {...register("type")}
+                id="positive"
+                disabled={customIsLoading}
+                defaultChecked
+              />
+            </div>
+            <div className="flex items-center gap-4">
+              <label
+                htmlFor="neutral"
+                className="label label-text cursor-pointer"
+              >
+                Neutral
+              </label>
+              <input
+                type="radio"
+                className="radio"
+                value="neutral"
+                {...register("type")}
+                id="neutral"
+                disabled={customIsLoading}
+              />
+            </div>
+            <div className="flex items-center gap-4">
+              <label
+                htmlFor="negative"
+                className="label label-text cursor-pointer"
+              >
+                Negative
+              </label>
+              <input
+                type="radio"
+                className="radio"
+                value="negative"
+                {...register("type")}
+                id="negative"
+                disabled={customIsLoading}
+              />
+            </div>
           </div>
         </div>
         <div className="label label-text-alt flex justify-end">
@@ -351,6 +407,7 @@ function QueryForm() {
 
 function SidePanel() {
   const setSelectedQueryId = useSetAtom(selectedQueryIdAtom);
+  const setIsNavOpen = useSetAtom(isNavOpenAtom);
 
   return (
     <>
@@ -358,7 +415,10 @@ function SidePanel() {
         <Button
           className="w-full"
           // className="text-semibold flex w-full items-center justify-center gap-2 rounded-lg bg-neutral-800 px-5 py-3 font-semibold text-white"
-          onClick={() => setSelectedQueryId(null)}
+          onClick={() => {
+            setSelectedQueryId(null);
+            setIsNavOpen(false);
+          }}
         >
           <PlusIcon className="mr-2 text-fuchsia-500" /> Add new
         </Button>
@@ -400,6 +460,8 @@ function QueryList() {
 
 function QueryElement({ id, input }: Pick<Query, "id" | "input">) {
   const setSelectedQueryId = useSetAtom(selectedQueryIdAtom);
+  const setIsNavOpen = useSetAtom(isNavOpenAtom);
+
   const utils = api.useContext();
 
   const onHover = () => {
@@ -412,7 +474,10 @@ function QueryElement({ id, input }: Pick<Query, "id" | "input">) {
       <Button
         className="block w-full truncate"
         // className="text-semibold w-full rounded-lg bg-neutral-800 px-5 py-3 text-white"
-        onClick={() => setSelectedQueryId(id)}
+        onClick={() => {
+          setSelectedQueryId(id);
+          setIsNavOpen(false);
+        }}
       >
         {input}
       </Button>
@@ -458,4 +523,9 @@ function User() {
 const useResetSelectedQueryIdAtom = () => {
   const setSelectedQueryId = useSetAtom(selectedQueryIdAtom);
   useEffect(() => () => setSelectedQueryId(null), [setSelectedQueryId]);
+};
+
+const useResetIsNavOpenAtom = () => {
+  const setIsNavOpenAtom = useSetAtom(isNavOpenAtom);
+  useEffect(() => () => setIsNavOpenAtom(false), [setIsNavOpenAtom]);
 };

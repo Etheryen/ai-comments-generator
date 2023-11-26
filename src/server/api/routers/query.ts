@@ -1,5 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import { env } from "~/env.mjs";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { newQuerySchema } from "~/utils/schemas";
 
@@ -15,18 +16,16 @@ export const queryRouter = createTRPCRouter({
   addNew: protectedProcedure
     .input(newQuerySchema)
     .mutation(async ({ input, ctx }) => {
+      await new Promise((r) => setTimeout(r, 1500));
       try {
-        const response = await fetch(
-          "https://railway.io/project/2489ysd7f78tn8fsdfsdf/api/query",
-          {
-            method: "POST",
-            body: JSON.stringify({ ...input }),
-            headers: {
-              "Content-Type": "application/json",
-              PasswordHash: "daw78dhaw78dhaw78da", // TODO: use actual process.env.AI_API_SECRET
-            },
+        const response = await fetch(`${env.API_BASE_URL}/api/comments`, {
+          method: "POST",
+          body: JSON.stringify({ ...input, commentsNumber: 5 }),
+          headers: {
+            "Content-Type": "application/json",
+            password: env.API_PASSWORD, // TODO: use actual process.env.AI_API_SECRET
           },
-        );
+        });
         const parsedQueryResponse = queryResponseSchema.parse(
           await response.json(),
         );

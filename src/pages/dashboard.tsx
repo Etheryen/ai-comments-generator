@@ -158,13 +158,11 @@ function QueryWithResults({ queryId, data }: QueryWithResultsProps) {
       </h1>
       <div className="flex flex-col gap-2">
         <div className="flex flex-col items-center justify-between gap-4 lg:flex-row">
-          <div className="flex items-center gap-4">
-            <label
-              htmlFor="formality"
-              className="label label-text cursor-pointer"
-            >
-              Formal
-            </label>
+          <label
+            htmlFor="formality"
+            className="label label-text flex cursor-pointer items-center gap-4"
+          >
+            Formal
             <input
               type="checkbox"
               id="formality"
@@ -172,15 +170,13 @@ function QueryWithResults({ queryId, data }: QueryWithResultsProps) {
               className="toggle"
               checked={data.queryData.register === "formal"}
             />
-          </div>
+          </label>
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-4">
-              <label
-                htmlFor="positive"
-                className="label label-text cursor-pointer"
-              >
-                Positive
-              </label>
+            <label
+              htmlFor="positive"
+              className="label label-text flex cursor-pointer items-center gap-4"
+            >
+              Positive
               <input
                 type="radio"
                 className="radio"
@@ -189,14 +185,12 @@ function QueryWithResults({ queryId, data }: QueryWithResultsProps) {
                 disabled
                 checked={data.queryData.type === "positive"}
               />
-            </div>
-            <div className="flex items-center gap-4">
-              <label
-                htmlFor="neutral"
-                className="label label-text cursor-pointer"
-              >
-                Neutral
-              </label>
+            </label>
+            <label
+              htmlFor="neutral"
+              className="label label-text flex cursor-pointer items-center gap-4"
+            >
+              Neutral
               <input
                 type="radio"
                 className="radio"
@@ -205,14 +199,12 @@ function QueryWithResults({ queryId, data }: QueryWithResultsProps) {
                 disabled
                 checked={data.queryData.type === "neutral"}
               />
-            </div>
-            <div className="flex items-center gap-4">
-              <label
-                htmlFor="negative"
-                className="label label-text cursor-pointer"
-              >
-                Negative
-              </label>
+            </label>
+            <label
+              htmlFor="negative"
+              className="label label-text flex cursor-pointer items-center gap-4"
+            >
+              Negative
               <input
                 type="radio"
                 className="radio"
@@ -221,7 +213,7 @@ function QueryWithResults({ queryId, data }: QueryWithResultsProps) {
                 disabled
                 checked={data.queryData.type === "negative"}
               />
-            </div>
+            </label>
           </div>
         </div>
         <div className="mt-2 flex flex-col">
@@ -304,13 +296,11 @@ function QueryForm() {
         className="flex flex-col gap-2"
       >
         <div className="flex flex-col items-center justify-between gap-4 lg:flex-row">
-          <div className="flex items-center gap-4">
-            <label
-              htmlFor="formality"
-              className="label label-text cursor-pointer"
-            >
-              Formal
-            </label>
+          <label
+            htmlFor="formality"
+            className="label label-text flex cursor-pointer items-center gap-4"
+          >
+            Formal
             <input
               type="checkbox"
               defaultChecked
@@ -319,15 +309,13 @@ function QueryForm() {
               disabled={customIsLoading}
               className="toggle"
             />
-          </div>
+          </label>
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-4">
-              <label
-                htmlFor="positive"
-                className="label label-text cursor-pointer"
-              >
-                Positive
-              </label>
+            <label
+              htmlFor="positive"
+              className="label label-text flex cursor-pointer items-center gap-4"
+            >
+              Positive
               <input
                 type="radio"
                 className="radio"
@@ -337,14 +325,12 @@ function QueryForm() {
                 disabled={customIsLoading}
                 defaultChecked
               />
-            </div>
-            <div className="flex items-center gap-4">
-              <label
-                htmlFor="neutral"
-                className="label label-text cursor-pointer"
-              >
-                Neutral
-              </label>
+            </label>
+            <label
+              htmlFor="neutral"
+              className="label label-text flex cursor-pointer items-center gap-4"
+            >
+              Neutral
               <input
                 type="radio"
                 className="radio"
@@ -353,14 +339,12 @@ function QueryForm() {
                 id="neutral"
                 disabled={customIsLoading}
               />
-            </div>
-            <div className="flex items-center gap-4">
-              <label
-                htmlFor="negative"
-                className="label label-text cursor-pointer"
-              >
-                Negative
-              </label>
+            </label>
+            <label
+              htmlFor="negative"
+              className="label label-text flex cursor-pointer items-center gap-4"
+            >
+              Negative
               <input
                 type="radio"
                 className="radio"
@@ -369,7 +353,7 @@ function QueryForm() {
                 id="negative"
                 disabled={customIsLoading}
               />
-            </div>
+            </label>
           </div>
         </div>
         <div className="label label-text-alt flex justify-end">

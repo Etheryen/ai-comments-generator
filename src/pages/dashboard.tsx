@@ -159,7 +159,9 @@ function QueryWithResults({ queryId, data }: QueryWithResultsProps) {
   const { mutate: addMoreComments } =
     api.queries.getMoreCommentsToQueryId.useMutation({
       onSuccess: async ({ commentsResponse, queryNamesResponse }) => {
-        const currentComments = utils.comments.getAllByQueryId.getData();
+        const currentComments = utils.comments.getAllByQueryId.getData({
+          id: queryId,
+        });
         utils.comments.getAllByQueryId.setData(
           { id: queryNamesResponse.id },
           {

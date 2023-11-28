@@ -152,6 +152,44 @@ interface QueryWithResultsProps {
 }
 
 function QueryWithResults({ queryId, data }: QueryWithResultsProps) {
+  const utils = api.useContext();
+
+  const [customIsLoading, setCustomIsLoading] = useState(false);
+
+  const { mutate: addMoreComments } =
+    api.queries.getMoreCommentsToQueryId.useMutation({
+      onSuccess: async ({ commentsResponse, queryNamesResponse }) => {
+        const currentComments = utils.comments.getAllByQueryId.getData();
+        utils.comments.getAllByQueryId.setData(
+          { id: queryNamesResponse.id },
+          {
+            comments: [
+              ...(currentComments?.comments ?? []),
+              ...commentsResponse.comments,
+            ],
+            queryData: commentsResponse.queryData,
+          },
+        );
+        setCustomIsLoading(false);
+        await utils.comments.getAllByQueryId.invalidate({ id: queryId });
+      },
+      onError: () => {
+        toast.error("Server error, please try again", {
+          style: {
+            backgroundColor: "#171717",
+            color: "white",
+            padding: "1rem 2rem",
+          },
+        });
+        setCustomIsLoading(false);
+      },
+    });
+
+  const handleAddMoreComments = () => {
+    setCustomIsLoading(true);
+    addMoreComments({ id: queryId });
+  };
+
   return (
     <div className="w-full max-w-2xl space-y-4 pt-12 sm:pt-0 md:w-[80%]">
       <h1 className="mb-8 text-center text-4xl font-bold">
@@ -242,9 +280,21 @@ function QueryWithResults({ queryId, data }: QueryWithResultsProps) {
             </div>
           </div>
         ))}
-        {/* TODO: actually make it fetch more */}
-        <Button className="mx-auto w-fit bg-primary px-6 hover:bg-primary/80">
-          <PlusIcon className="mr-2" />I need more!
+        <Button
+          disabled={customIsLoading}
+          onClick={handleAddMoreComments}
+          className="mx-auto w-fit bg-primary px-6 hover:bg-primary/80"
+        >
+          {!customIsLoading && (
+            <>
+              <PlusIcon className="mr-2" />I need more!
+            </>
+          )}
+          {customIsLoading && (
+            <>
+              <Loader2Icon className="mr-2 h-4 w-4 animate-spin" /> Loading more
+            </>
+          )}
         </Button>
       </div>
     </div>

@@ -289,12 +289,12 @@ function QueryWithResults({ queryId, data }: QueryWithResultsProps) {
         >
           {!customIsLoading && (
             <>
-              <PlusIcon className="mr-2 h-6 w-6" />I need more!
+              <PlusIcon className="mr-2 h-4 w-4" />I need more!
             </>
           )}
           {customIsLoading && (
             <>
-              <Loader2Icon className="mr-2 h-6 w-6 animate-spin" /> Loading more
+              <Loader2Icon className="mr-2 h-4 w-4 animate-spin" /> Loading more
             </>
           )}
         </Button>

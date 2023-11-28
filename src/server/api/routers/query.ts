@@ -6,12 +6,12 @@ import { newQuerySchema } from "~/utils/schemas";
 
 const testComments = [
   {
-    username: "@johndoeAAAAAAAAAAAAAA",
+    username: "@johndoeDDDDDDDDDDD",
     message:
       "Hi there! Welcome to Facebook 🎉 I hope you enjoy exploring all of the features and connecting with friends and family. Let me know if you have any questions or need help getting started! 😊 #FacebookWelcome #NewToSocialMedia",
   },
   {
-    username: "@mariagomez",
+    username: "@mariagomezDDDDDDDDDDD",
     message:
       "Welcome aboard! We are happy to see new users on our page, especially during this challenging time. Don't hesitate to reach out if you need any assistance or have questions about how to use Facebook effectively. 😊 #FacebookCommunity #WelcomeToSocialMedia",
   },
@@ -26,7 +26,7 @@ const testComments = [
       "Welcome to the biggest social network on Earth 🌍 It can be overwhelming at first, but with some experimentation and practice, you'll soon find your groove. Don't forget to join groups that interest you and participate in conversations to build",
   },
   {
-    username: "@jessicawu",
+    username: "@jessicawuDDDDDDDD",
     message:
       "Hello! Welcome to the vast world of social media 🌐 We hope you enjoy connecting with friends, sharing your thoughts and ideas, and discovering new content that inspires you. Remember to be kind and respectful to others, and don't hesitate to reach out if you need help or have questions. 😊 #FacebookWelcome #NewToSocialMedia",
   },

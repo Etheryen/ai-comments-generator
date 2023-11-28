@@ -191,7 +191,7 @@ function QueryWithResults({ queryId, data }: QueryWithResultsProps) {
   };
 
   return (
-    <div className="w-full max-w-2xl space-y-4 pt-12 sm:pt-0 md:w-[80%]">
+    <div className="w-full max-w-2xl space-y-4 pt-20 sm:pt-6 md:w-[80%]">
       <h1 className="mb-8 text-center text-4xl font-bold">
         Enjoy your <span className="text-primary">comments</span>
       </h1>
@@ -287,12 +287,12 @@ function QueryWithResults({ queryId, data }: QueryWithResultsProps) {
         >
           {!customIsLoading && (
             <>
-              <PlusIcon className="mr-2" />I need more!
+              <PlusIcon className="mr-2 h-6 w-6" />I need more!
             </>
           )}
           {customIsLoading && (
             <>
-              <Loader2Icon className="mr-2 h-4 w-4 animate-spin" /> Loading more
+              <Loader2Icon className="mr-2 h-6 w-6 animate-spin" /> Loading more
             </>
           )}
         </Button>

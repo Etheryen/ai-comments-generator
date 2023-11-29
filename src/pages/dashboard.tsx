@@ -99,7 +99,10 @@ function SideSection() {
           })}
         >
           <span className="text-center">
-            Comment<span className="text-fuchsia-500">GPT</span>
+            Comment
+            <span className="bg-gradient-to-r from-fuchsia-400 to-fuchsia-700 bg-clip-text text-transparent">
+              GPT
+            </span>
           </span>
         </Link>
       </div>
@@ -223,7 +226,10 @@ function QueryWithResults({ queryId, data }: QueryWithResultsProps) {
   return (
     <div className="w-full max-w-2xl space-y-4 pt-20 sm:pt-6 md:w-[80%]">
       <h1 className="mb-8 text-center text-4xl font-bold">
-        Enjoy your <span className="text-primary">comments</span>
+        Enjoy your{" "}
+        <span className="bg-gradient-to-r from-fuchsia-400 to-fuchsia-700 bg-clip-text text-transparent">
+          comments
+        </span>
       </h1>
       <div className="flex flex-col gap-2">
         <div className="flex flex-col items-center justify-between gap-4 lg:flex-row">
@@ -435,7 +441,10 @@ function QueryForm() {
   return (
     <div className="w-full max-w-2xl space-y-4 md:w-[80%]">
       <h1 className="mb-8 text-center text-4xl font-bold">
-        Generate some <span className="text-primary">comments</span>
+        Generate some{" "}
+        <span className="bg-gradient-to-r from-fuchsia-400 to-fuchsia-700 bg-clip-text text-transparent">
+          comments
+        </span>
       </h1>
       <form
         // eslint-disable-next-line @typescript-eslint/no-misused-promises

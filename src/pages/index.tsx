@@ -34,7 +34,10 @@ export default function Home() {
   return (
     <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
       <h1 className="text-center text-5xl font-bold tracking-tight sm:text-[5rem]">
-        Comment<span className="text-fuchsia-500">GPT</span>
+        Comment
+        <span className="bg-gradient-to-r from-fuchsia-400 to-fuchsia-700 bg-clip-text text-transparent">
+          GPT
+        </span>
       </h1>
       <div className="flex flex-col gap-4 text-center text-3xl">
         <p>

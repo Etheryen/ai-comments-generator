@@ -146,6 +146,8 @@ function MainPanel() {
   return <QueryForm />;
 }
 
+const EXPECTED_API_RESPONSE_TIME_IN_SECONDS = 240;
+
 interface QueryWithResultsProps {
   queryId: string;
   data: inferProcedureOutput<AppRouter["comments"]["getAllByQueryId"]>;
@@ -159,6 +161,10 @@ function QueryWithResults({ queryId, data }: QueryWithResultsProps) {
   const { mutate: addMoreComments } =
     api.queries.getMoreCommentsToQueryId.useMutation({
       onSuccess: async ({ commentsResponse, queryNamesResponse }) => {
+        setProgressValue(0);
+        if (currentIntervalId) clearInterval(currentIntervalId);
+        setCurrentIntervalId(null);
+
         const currentComments = utils.comments.getAllByQueryId.getData({
           id: queryId,
         });
@@ -183,13 +189,35 @@ function QueryWithResults({ queryId, data }: QueryWithResultsProps) {
             padding: "1rem 2rem",
           },
         });
+
         setCustomIsLoading(false);
+        setProgressValue(0);
+        if (currentIntervalId) clearInterval(currentIntervalId);
+        setCurrentIntervalId(null);
       },
     });
+
+  const [currentIntervalId, setCurrentIntervalId] =
+    useState<NodeJS.Timeout | null>(null);
+  const [progressValue, setProgressValue] = useState(0);
 
   const handleAddMoreComments = () => {
     setCustomIsLoading(true);
     addMoreComments({ id: queryId });
+
+    const intervalId = setInterval(
+      () => {
+        setProgressValue((prev) => {
+          if (prev >= 100) {
+            clearInterval(intervalId);
+            return 100;
+          }
+          return prev + 1;
+        });
+      },
+      (EXPECTED_API_RESPONSE_TIME_IN_SECONDS * 1000) / 100,
+    );
+    setCurrentIntervalId(intervalId);
   };
 
   return (
@@ -298,6 +326,18 @@ function QueryWithResults({ queryId, data }: QueryWithResultsProps) {
             </>
           )}
         </Button>
+        {customIsLoading && (
+          <>
+            <progress
+              className="progress progress-primary mt-2"
+              value={progressValue}
+              max="100"
+            ></progress>
+            <div className="mt-1 text-center text-xl font-semibold">
+              {progressValue}%
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
@@ -308,8 +348,6 @@ const formSchema = newQuerySchema.omit({ register: true }).extend({
 });
 
 type FormSchema = z.infer<typeof formSchema>;
-
-const EXPECTED_API_RESPONSE_TIME_IN_SECONDS = 240;
 
 function QueryForm() {
   const [customIsLoading, setCustomIsLoading] = useState(false);

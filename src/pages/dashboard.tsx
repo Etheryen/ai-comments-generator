@@ -309,6 +309,8 @@ const formSchema = newQuerySchema.omit({ register: true }).extend({
 
 type FormSchema = z.infer<typeof formSchema>;
 
+const EXPECTED_API_RESPONSE_TIME_IN_SECONDS = 240;
+
 function QueryForm() {
   const [customIsLoading, setCustomIsLoading] = useState(false);
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -331,6 +333,10 @@ function QueryForm() {
   const { mutate: addNewQuery } = api.queries.addNew.useMutation({
     onSuccess: async ({ commentsResponse, queryNamesResponse }) => {
       setSelectedQueryId(queryNamesResponse.id);
+
+      if (currentIntervalId) clearInterval(currentIntervalId);
+      setCurrentIntervalId(null);
+
       const currentQueries = utils.queries.getAllQueryNames.getData() ?? [];
       utils.queries.getAllQueryNames.setData(undefined, [
         queryNamesResponse,
@@ -350,9 +356,17 @@ function QueryForm() {
           padding: "1rem 2rem",
         },
       });
+
       setCustomIsLoading(false);
+      setProgressValue(0);
+      if (currentIntervalId) clearInterval(currentIntervalId);
+      setCurrentIntervalId(null);
     },
   });
+
+  const [currentIntervalId, setCurrentIntervalId] =
+    useState<NodeJS.Timeout | null>(null);
+  const [progressValue, setProgressValue] = useState(0);
 
   const onSubmit: SubmitHandler<FormSchema> = (data) => {
     setCustomIsLoading(true);
@@ -362,6 +376,20 @@ function QueryForm() {
       register: data.isFormal ? ("formal" as const) : ("informal" as const),
     };
     addNewQuery(finalData);
+
+    const intervalId = setInterval(
+      () => {
+        setProgressValue((prev) => {
+          if (prev >= 100) {
+            clearInterval(intervalId);
+            return 100;
+          }
+          return prev + 1;
+        });
+      },
+      (EXPECTED_API_RESPONSE_TIME_IN_SECONDS * 1000) / 100,
+    );
+    setCurrentIntervalId(intervalId);
   };
 
   const { ref, ...rest } = register("query");
@@ -474,6 +502,18 @@ function QueryForm() {
           )}
           Submit{customIsLoading && "ting"}
         </Button>
+        {customIsLoading && (
+          <>
+            <progress
+              className="progress progress-primary mt-2"
+              value={progressValue}
+              max="100"
+            ></progress>
+            <div className="mt-1 text-center text-xl font-semibold">
+              {progressValue}%
+            </div>
+          </>
+        )}
       </form>
     </div>
   );

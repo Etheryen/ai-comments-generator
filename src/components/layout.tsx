@@ -17,7 +17,6 @@ export function Layout({ title, description, children }: LayoutProps) {
       <Head>
         <title>{title}</title>
         <meta name="description" content={description} />
-        <link rel="icon" href="/favicon.ico" />
       </Head>
       <main
         className={cn(

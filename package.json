@@ -1,5 +1,5 @@
 {
-  "name": "ai-comments-generator",
+  "name": "comment-gpt",
   "version": "0.1.0",
   "private": true,
   "scripts": {

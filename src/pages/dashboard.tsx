@@ -184,8 +184,8 @@ function QueryWithResults({ queryId, data }: QueryWithResultsProps) {
         setCustomIsLoading(false);
         await utils.comments.getAllByQueryId.invalidate({ id: queryId });
       },
-      onError: () => {
-        toast.error("Server error, please try again", {
+      onError: (error) => {
+        toast.error(error.message, {
           style: {
             backgroundColor: "#171717",
             color: "white",
@@ -392,8 +392,8 @@ function QueryForm() {
       );
       await utils.queries.getAllQueryNames.invalidate();
     },
-    onError: () => {
-      toast.error("Server error, please try again", {
+    onError: (error) => {
+      toast.error(error.message, {
         style: {
           backgroundColor: "#171717",
           color: "white",

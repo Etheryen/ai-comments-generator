@@ -17,6 +17,10 @@ export const queryRouter = createTRPCRouter({
   addNew: protectedProcedure
     .input(newQuerySchema)
     .mutation(async ({ input, ctx }) => {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Sorry we're unavailble now, please try again in the future",
+      });
       try {
         const response = await fetch(`${env.API_BASE_URL}/api/comments`, {
           method: "POST",
@@ -79,6 +83,10 @@ export const queryRouter = createTRPCRouter({
   getMoreCommentsToQueryId: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input, ctx }) => {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Sorry we're unavailble now, please try again in the future",
+      });
       try {
         const query = await ctx.db.query.findUnique({
           where: { id: input.id },

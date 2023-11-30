@@ -82,7 +82,7 @@ export const queryRouter = createTRPCRouter({
     }),
   getMoreCommentsToQueryId: protectedProcedure
     .input(z.object({ id: z.string() }))
-    .mutation(async ({ input, ctx }) => {
+    .mutation(({ input, ctx }) => {
       throw new TRPCError({
         code: "NOT_IMPLEMENTED",
         message: "We're currently unavailable, please try again in the future",

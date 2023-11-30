@@ -163,27 +163,27 @@ function QueryWithResults({ queryId, data }: QueryWithResultsProps) {
 
   const { mutate: addMoreComments } =
     api.queries.getMoreCommentsToQueryId.useMutation({
-      // onSuccess: async ({ commentsResponse, queryNamesResponse }) => {
-      //   setProgressValue(0);
-      //   if (currentIntervalId) clearInterval(currentIntervalId);
-      //   setCurrentIntervalId(null);
-      //
-      //   const currentComments = utils.comments.getAllByQueryId.getData({
-      //     id: queryId,
-      //   });
-      //   utils.comments.getAllByQueryId.setData(
-      //     { id: queryNamesResponse.id },
-      //     {
-      //       comments: [
-      //         ...(currentComments?.comments ?? []),
-      //         ...commentsResponse.comments,
-      //       ],
-      //       queryData: commentsResponse.queryData,
-      //     },
-      //   );
-      //   setCustomIsLoading(false);
-      //   await utils.comments.getAllByQueryId.invalidate({ id: queryId });
-      // },
+      onSuccess: async ({ commentsResponse, queryNamesResponse }) => {
+        setProgressValue(0);
+        if (currentIntervalId) clearInterval(currentIntervalId);
+        setCurrentIntervalId(null);
+
+        const currentComments = utils.comments.getAllByQueryId.getData({
+          id: queryId,
+        });
+        utils.comments.getAllByQueryId.setData(
+          { id: queryNamesResponse.id },
+          {
+            comments: [
+              ...(currentComments?.comments ?? []),
+              ...commentsResponse.comments,
+            ],
+            queryData: commentsResponse.queryData,
+          },
+        );
+        setCustomIsLoading(false);
+        await utils.comments.getAllByQueryId.invalidate({ id: queryId });
+      },
       onError: (error) => {
         toast.error(error.message, {
           style: {
@@ -375,23 +375,23 @@ function QueryForm() {
   const setSelectedQueryId = useSetAtom(selectedQueryIdAtom);
 
   const { mutate: addNewQuery } = api.queries.addNew.useMutation({
-    // onSuccess: async ({ commentsResponse, queryNamesResponse }) => {
-    //   setSelectedQueryId(queryNamesResponse.id);
-    //
-    //   if (currentIntervalId) clearInterval(currentIntervalId);
-    //   setCurrentIntervalId(null);
-    //
-    //   const currentQueries = utils.queries.getAllQueryNames.getData() ?? [];
-    //   utils.queries.getAllQueryNames.setData(undefined, [
-    //     queryNamesResponse,
-    //     ...currentQueries,
-    //   ]);
-    //   utils.comments.getAllByQueryId.setData(
-    //     { id: queryNamesResponse.id },
-    //     commentsResponse,
-    //   );
-    //   await utils.queries.getAllQueryNames.invalidate();
-    // },
+    onSuccess: async ({ commentsResponse, queryNamesResponse }) => {
+      setSelectedQueryId(queryNamesResponse.id);
+
+      if (currentIntervalId) clearInterval(currentIntervalId);
+      setCurrentIntervalId(null);
+
+      const currentQueries = utils.queries.getAllQueryNames.getData() ?? [];
+      utils.queries.getAllQueryNames.setData(undefined, [
+        queryNamesResponse,
+        ...currentQueries,
+      ]);
+      utils.comments.getAllByQueryId.setData(
+        { id: queryNamesResponse.id },
+        commentsResponse,
+      );
+      await utils.queries.getAllQueryNames.invalidate();
+    },
     onError: (error) => {
       toast.error(error.message, {
         style: {

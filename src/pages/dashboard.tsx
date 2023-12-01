@@ -46,8 +46,6 @@ export default function Dashboard() {
 
   return (
     <div className="flex w-full flex-1">
-      {/* TODO: zrobic zeby na mobile otwieralo sie przyciskiem a nie w-[25vw] */}
-      {/* TODO: h-screen na mobile nie */}
       {!isNavOpen && (
         <Button
           onClick={() => setIsNavOpen(true)}

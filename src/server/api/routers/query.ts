@@ -23,7 +23,7 @@ export const queryRouter = createTRPCRouter({
           body: JSON.stringify({ ...input, commentsNumber: COMMENTS_NUMBER }),
           headers: {
             "Content-Type": "application/json",
-            password: env.API_PASSWORD, // TODO: use actual process.env.AI_API_SECRET
+            password: env.API_PASSWORD,
           },
         });
 
